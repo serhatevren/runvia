@@ -1,0 +1,38 @@
+# Environment / secrets
+.env
+.env.*
+!.env.example
+*.pem
+
+# Python
+__pycache__/
+*.pyc
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.venv/
+venv/
+.coverage
+.coverage.*
+coverage.xml
+htmlcov/
+/backend/build/
+dist/
+
+# Frontend
+node_modules/
+.next/
+
+# Terraform (commit .terraform.lock.hcl; it pins provider versions)
+.terraform/
+*.tfstate
+*.tfstate.*
+*.tfplan
+crash.log
+*.tfvars
+*.tfvars.json
+!*.tfvars.example
+
+# OS / editor
+.DS_Store
+.vscode/
