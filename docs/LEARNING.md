@@ -2,7 +2,7 @@
 
 ## Current stage
 
-**Stage 0: Bootstrap.** Done: project skeleton, `GET /health/live` + first test, request-ID middleware, quality-gate config (Ruff, mypy strict, pytest strict). Next: pre-commit + GitHub Actions CI with branch protection, then JSON logging.
+**Stage 0: Bootstrap.** Done: project skeleton, `GET /health/live` + first test, request-ID middleware, quality-gate config (Ruff, mypy strict, pytest strict), pre-commit hooks + GitHub Actions CI + Dependabot. Next: turn on branch protection and watch CI block a failing PR, then JSON logging.
 
 ## Concepts covered
 
@@ -21,6 +21,9 @@
 - [S0] `contextvars`: per-request value, safe with concurrent requests; set + `reset(token)` in `finally`.
 - [S0] Headers are untrusted input: validate before reuse/logging (`fullmatch`, charset + length).
 - [S0] Quality gate: Ruff = linter (bug/style patterns) + formatter; mypy strict = types checked before the code runs; pytest strict = typos in markers/config fail.
+- [S0] pre-commit: Git hooks run the gate before a commit (Ruff, mypy) or push (pytest); skippable with `--no-verify`, so CI is the real enforcement.
+- [S0] One tool version source: hooks call `uv run --locked`, so hooks, CI and editor share the versions in `uv.lock`.
+- [S0] CI on GitHub Actions: clean machine per PR; least-privilege token, actions pinned to commit SHAs; branch protection makes the checks required.
 - [S0] Pydantic response model on a route → typed schema in `/openapi.json`, the contract clients are generated from.
 
 ## Weak spots

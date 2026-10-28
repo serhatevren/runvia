@@ -1,0 +1,65 @@
+# Ruff, mypy and pytest run from the backend's locked environment (uv.lock), so hooks,
+# CI and editors always use the same tool versions.
+default_install_hook_types: [pre-commit, pre-push]
+default_stages: [pre-commit]
+minimum_pre_commit_version: "4.0.0"
+
+repos:
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: 3e8a8703264a2f4a69428a0aa4dcb512790b2c8c  # frozen: v6.0.0
+    hooks:
+      - id: trailing-whitespace
+      - id: end-of-file-fixer
+      - id: mixed-line-ending
+        args: [--fix=lf]
+      - id: check-yaml
+      - id: check-toml
+      - id: check-json
+      - id: check-merge-conflict
+      - id: check-case-conflict
+      - id: check-added-large-files
+        args: [--maxkb=500]
+      - id: detect-private-key
+
+  - repo: local
+    hooks:
+      - id: uv-lock
+        name: uv lock --check
+        entry: uv lock --check --project backend
+        language: system
+        files: ^backend/(pyproject\.toml|uv\.lock)$
+        pass_filenames: false
+
+      - id: ruff-check
+        name: ruff check
+        entry: uv run --locked --project backend ruff check --fix --force-exclude
+        language: system
+        types_or: [python, pyi]
+        files: ^backend/
+        require_serial: true
+
+      - id: ruff-format
+        name: ruff format
+        entry: uv run --locked --project backend ruff format --force-exclude
+        language: system
+        types_or: [python, pyi]
+        files: ^backend/
+        require_serial: true
+
+      # Strict mode needs the whole program, so mypy checks the configured paths, not
+      # only the staged files.
+      - id: mypy
+        name: mypy
+        entry: uv run --locked --directory backend mypy
+        language: system
+        types_or: [python, pyi]
+        files: ^backend/
+        pass_filenames: false
+
+      - id: pytest
+        name: pytest
+        entry: uv run --locked --directory backend pytest -q
+        language: system
+        files: ^backend/
+        pass_filenames: false
+        stages: [pre-push]
