@@ -2,9 +2,9 @@
 
 > **Runvia** is a self-hosted developer PaaS (a small Render/Railway/Heroku): connect a Git repository and it builds a container image, runs it on Kubernetes, gives it a URL, and lets you manage it through an API, a dashboard and a CLI.
 >
-> This document is the source of truth for **what to build and the rules to build it by**, for the developer and for coding agents. The [learning guide](runvia-learning-guide.md) covers what to study along the way; it never changes what gets built.
+> This document is the source of truth for **what to build and the rules to build it by**.
 >
-> **Standard:** Runvia is built as a production product. Every choice here is one a professional team would ship, and the developer learning along the way never lowers that bar.
+> **Standard:** Runvia is built as a production product. Every choice here is one a professional team would ship.
 >
 > Guiding rule: **build one thing completely before adding the next abstraction.**
 
@@ -715,9 +715,9 @@ Each phase ends with its acceptance criteria passing in CI and the docs updated.
 
 ---
 
-## 24. Rules for coding agents
+## 24. Contribution rules
 
-1. **Production standard.** Write what a strong team would approve in code review. Never simplify, stub or pick a toy approach because the developer is learning; teach in the explanation instead.
+1. **Production standard.** Write what a strong team would approve in code review. Never simplify, stub or pick a toy approach.
 2. Read `README.md`, `docs/ARCHITECTURE.md` and this spec before changing architecture. Stay within the current phase unless asked.
 3. Ship tests with every feature, a migration with every schema change, and doc/ADR updates with every architectural change.
 4. Preserve tenant isolation and the role matrix. Never hard-code, commit or log secrets.
@@ -726,6 +726,6 @@ Each phase ends with its acceptance criteria passing in CI and the docs updated.
 7. Make jobs idempotent. Give every network call and subprocess a timeout.
 8. Prefer maintained, widely used libraries for solved problems. Hand-roll only Runvia's own domain logic, or code no library fits, and say why.
 9. No demo, placeholder or dead code in the repository. Experiments live outside it.
-10. Every change passes the quality gate (§18) and lands through a pull request (§19). The developer runs every Git and pull-request command; agents never branch, commit, push, merge or open pull requests, and only propose the branch names, commit messages and PR text. Commits, PR text, code and docs carry no tool attribution: no co-author trailers and no "generated with" lines.
+10. Every change passes the quality gate (§18) and lands through a pull request (§19) that merges only with green CI. Never push directly to `main`.
 11. Keep `make dev` and the local path working.
 12. Never replace a simple working implementation with a more complex one just for the look of sophistication.

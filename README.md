@@ -34,4 +34,3 @@ uv run pytest
 ## Documentation
 
 - [Engineering spec](runvia-engineering-spec.md): architecture, rules and roadmap.
-- [Learning guide](runvia-learning-guide.md): study plan that accompanies each phase.
