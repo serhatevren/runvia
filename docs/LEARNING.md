@@ -2,7 +2,7 @@
 
 ## Current stage
 
-**Stage 0: Bootstrap.** Done: project skeleton, `GET /health/live` + first test, request-ID middleware, quality-gate config (Ruff, mypy strict, pytest strict), pre-commit hooks + GitHub Actions CI + Dependabot. Next: turn on branch protection and watch CI block a failing PR, then JSON logging.
+**Stage 0: Bootstrap.** Done: project skeleton, `GET /health/live` + first test, request-ID middleware, quality-gate config (Ruff, mypy strict, pytest strict), pre-commit hooks + GitHub Actions CI + Dependabot, branch protection (ruleset requiring `lint` + `test`, proven with a failing PR), typed settings + structured JSON logging. Next: Dockerfile, then Compose and Makefile (`make dev`), then the Stage 0 exit check.
 
 ## Concepts covered
 
@@ -25,6 +25,10 @@
 - [S0] One tool version source: hooks call `uv run --locked`, so hooks, CI and editor share the versions in `uv.lock`.
 - [S0] CI on GitHub Actions: clean machine per PR; least-privilege token, actions pinned to commit SHAs; branch protection makes the checks required.
 - [S0] Pydantic response model on a route → typed schema in `/openapi.json`, the contract clients are generated from.
+- [S0] Typed settings (pydantic-settings): env vars validated at startup, fail fast instead of failing on first use.
+- [S0] Structured logging: one JSON object per line, fields machines can filter on; structlog processor chain enriches → redacts → renders.
+- [S0] stdlib bridge: uvicorn/library records go through the same formatter, so every line has the same shape.
+- [S0] Access log in middleware: method, path (no query string), status, duration, request ID; 5xx logged as error.
 
 ## Weak spots
 
@@ -33,4 +37,4 @@
 ## Open questions
 
 - Unhandled exceptions return a 500 without `X-Request-ID` (Starlette's error middleware sits outside ours). Fix with the error envelope (Phase 2).
-- httpx vs httpx2 for outbound calls: decide when the first outbound integration lands.
+- httpx vs httpx2 for outbound calls: decide when the first outbound integration lands. Its logger writes full URLs (query strings included) at INFO; raise it to WARNING then.
