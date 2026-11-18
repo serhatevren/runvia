@@ -4,12 +4,13 @@ import pytest
 from fastapi.testclient import TestClient
 
 from runvia.api.app import create_app
+from runvia.core.config import Settings
 from runvia.core.request_context import request_id_var
 
 
 @pytest.fixture
-def client() -> TestClient:
-    app = create_app()
+def client(settings: Settings) -> TestClient:
+    app = create_app(settings)
 
     @app.get("/_test/request-id")
     async def echo_request_id() -> dict[str, str | None]:

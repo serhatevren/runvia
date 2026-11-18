@@ -6,20 +6,23 @@ A self-hosted developer PaaS: connect a Git repository and Runvia builds a conta
 
 ## Status
 
-Phase 0 (Bootstrap) is in progress: backend skeleton, `GET /health/live`, request IDs, pre-commit hooks and CI are done; JSON logging is next. See the [engineering spec](runvia-engineering-spec.md) §23 for the roadmap to v1.0.
+Phase 0 (Bootstrap) is in progress: backend skeleton, `GET /health/live`, request IDs, pre-commit hooks, CI with required checks on `main`, typed settings and structured JSON logging are done; the Dockerfile, Compose and Makefile are next. See the [engineering spec](runvia-engineering-spec.md) §23 for the roadmap to v1.0.
 
 ## Development
 
 Requires Python 3.14 and [uv](https://docs.astral.sh/uv/) 0.12.
 
 ```bash
+cp .env.example .env
 cd backend
 uv sync
 uv run pre-commit install
-uv run uvicorn runvia.api.app:create_app --factory --reload
+uv run uvicorn runvia.api.app:create_app --factory --reload --env-file ../.env
 ```
 
 The API listens on `http://127.0.0.1:8000`; interactive docs are at `/docs`.
+
+Settings are read from environment variables (see `.env.example`); the app refuses to start if a required one is missing or invalid. Logs go to stdout: readable console lines when `APP_ENV=development`, one JSON object per line in every other environment.
 
 Quality checks (all must pass before a pull request is merged). `pre-commit install` runs them as Git hooks: file checks, Ruff and mypy on every commit, pytest on every push. CI runs the same checks on every pull request, and `main` accepts only pull requests with green CI.
 
